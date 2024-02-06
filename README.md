@@ -1,1 +1,240 @@
 # DSA-Project-Grand
+#include <iostream>
+#include <stack>
+#include <cstring>
+using namespace std;
+bool isOperator(char c) {
+    return (c == '&' || c == '|' || c == '!'||c=='$');
+}
+
+int getPrecedence(char op) {
+    if (op == '!')
+        return 4;
+    else if (op == '&')
+        return 3;
+    else if (op == '$')
+        return 2;
+    else if (op == '|')
+        return 1;
+    else
+        return 0;
+}
+
+void infixToPostfix(const char* infix, char* postfix) {
+    stack<char> operatorStack;
+    int i = 0, j = 0;
+
+    while (infix[i] != '\0') {
+        char current = infix[i];
+
+        if (isalpha(current)) {
+            postfix[j++] = current;
+        }
+        else if (isOperator(current)) {
+            while (!operatorStack.empty() && getPrecedence(operatorStack.top()) >= getPrecedence(current)) {
+                postfix[j++] = operatorStack.top();
+                operatorStack.pop();
+            }
+            operatorStack.push(current);
+        }
+        else if (current == '(') {
+            operatorStack.push(current);
+        }
+        else if (current == ')') {
+            while (!operatorStack.empty() && operatorStack.top() != '(') {
+                postfix[j++] = operatorStack.top();
+                operatorStack.pop();
+            }
+            operatorStack.pop(); 
+        }
+
+        i++;
+    }
+
+    while (!operatorStack.empty()) {
+        postfix[j++] = operatorStack.top();
+        operatorStack.pop();
+    }
+
+    postfix[j] = '\0'; 
+}
+
+void PAdd(char a)
+{
+    switch (a)
+    {
+    case 'a':
+        cout << "001";
+        break;
+    case 'b':
+        cout << "010";
+        break;
+    case 'c':
+        cout << "011";
+        break;
+    case 'd':
+        cout << "100";
+        break;
+    case 'e':
+        cout << "101";
+        break;
+    case 'f':
+        cout << "110";
+        break;
+    case 'g':
+        cout << "111";
+        break;
+    default:
+        cout << "000";
+        break;
+    }
+}
+void Retx(int a)
+{
+    switch (a)
+    {
+    case 3:
+        {
+            cout << "101";
+            break;
+        }
+    case 2:
+    {
+        cout << "110";
+        break;
+    }
+    case 1:
+    {
+        cout << "111";
+        break;
+    }
+    default:
+    {
+        cout << "000";
+    }
+    }
+}
+void Fetchinst(char a)
+{
+    cout << "00010 ";
+    PAdd(a);
+    cout << " 000" << endl;
+}
+int OperateInst(char a, char b, char c, int x)
+{
+    cout << "10100";
+     Retx(x);
+    switch (c)
+    {
+    case '!':
+        cout << "010";
+        break;
+    case '&':
+        cout << "101";
+        break;
+    case'|':
+        cout << "110";
+        break;
+    case'$':
+        cout << "111";
+        break;
+    default:
+        cout << "000";
+        return 0;
+    }
+    cout << endl;
+    return 1;
+}
+char RetAv(int a)
+{
+    switch (a)
+    {
+    case 3:
+    {
+        return 'e';
+        break;
+    }
+    case 2:
+    {
+        return 'f';
+        break;
+    }
+    case 1:
+    {
+        return 'g';
+        break;
+    }
+    default:
+    {
+        return 'e';
+    }
+    }
+}
+int Instruction(char* test)
+{
+    stack<char> EvalStack;
+    char temp1, temp2;
+    int i = 0,Av=3;
+    while (test[i] != '\0')
+    {
+        if (test[i] == 'a' || test[i] == 'b' || test[i] == 'c' || test[i] == 'd')
+        {
+            EvalStack.push(test[i]);
+            Fetchinst(test[i]);
+        }
+        else if (isOperator(test[i]))
+        {
+            if (test[i] == '!')
+            {
+                temp1 = EvalStack.top();
+                temp2 = '\0';
+                EvalStack.pop();
+                if (temp1 == 'e' || temp1 == 'f' || temp1 == 'g')
+                {
+                    Av = Av + 1;
+                }
+                
+            }
+            else
+            {
+                temp1 = EvalStack.top();
+                EvalStack.pop();
+                if (temp1 == 'e' || temp1 == 'f' || temp1 == 'g')
+                {
+                    Av = Av + 1;
+                }
+                temp2 = EvalStack.top();
+                EvalStack.pop();
+                if (temp2 == 'e' || temp2 == 'f' || temp2 == 'g')
+                {
+                    Av = Av + 1;
+                }
+            }
+            
+                OperateInst(temp1,temp2,test[i],Av);
+                EvalStack.push(RetAv(Av));
+                Av = Av - 1;
+        }
+        if (Av < 0 || Av>3)
+        {
+            return 0;
+        }
+        i = i + 1;
+    }
+    return 1;
+}
+int main() {
+    const int maxSize = 100; 
+    char infixExpression[maxSize];
+    cout << "Enter an infix boolean expression: ";
+    cin.getline(infixExpression, maxSize);
+
+    char postfixExpression[maxSize];
+    infixToPostfix(infixExpression, postfixExpression);
+
+    cout << "Infix Expression: " << infixExpression << std::endl;
+    cout << "Postfix Expression: " << postfixExpression << std::endl;
+
+    Instruction(postfixExpression);
+    return 0;
+}
