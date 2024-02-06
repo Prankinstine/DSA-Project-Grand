@@ -121,24 +121,24 @@ void Fetchinst(char a)
 }
 int OperateInst(char a, char b, char c, int x)
 {
-    cout << "10100";
+    cout << "10100 ";
      Retx(x);
     switch (c)
     {
     case '!':
-        cout << "010";
+        cout << " 010";
         break;
     case '&':
-        cout << "101";
+        cout << " 101";
         break;
     case'|':
-        cout << "110";
+        cout << " 110";
         break;
     case'$':
-        cout << "111";
+        cout << " 111";
         break;
     default:
-        cout << "000";
+        cout << " 000";
         return 0;
     }
     cout << endl;
@@ -188,6 +188,7 @@ int Instruction(char* test)
                 temp1 = EvalStack.top();
                 temp2 = '\0';
                 EvalStack.pop();
+                Fetchinst(temp1);
                 if (temp1 == 'e' || temp1 == 'f' || temp1 == 'g')
                 {
                     Av = Av + 1;
@@ -216,6 +217,7 @@ int Instruction(char* test)
         }
         if (Av < 0 || Av>3)
         {
+            cout << "Non computable expresion!!";
             return 0;
         }
         i = i + 1;
