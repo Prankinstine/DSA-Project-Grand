@@ -179,7 +179,7 @@ int Instruction(char* test)
         if (test[i] == 'a' || test[i] == 'b' || test[i] == 'c' || test[i] == 'd')
         {
             EvalStack.push(test[i]);
-            Fetchinst(test[i]);
+            //Fetchinst(test[i]);
         }
         else if (isOperator(test[i]))
         {
@@ -203,17 +203,24 @@ int Instruction(char* test)
                 {
                     Av = Av + 1;
                 }
+                Fetchinst(temp1);
                 temp2 = EvalStack.top();
                 EvalStack.pop();
                 if (temp2 == 'e' || temp2 == 'f' || temp2 == 'g')
                 {
                     Av = Av + 1;
                 }
+                Fetchinst(temp2);
             }
             
                 OperateInst(temp1,temp2,test[i],Av);
                 EvalStack.push(RetAv(Av));
                 Av = Av - 1;
+        }
+        else
+        {
+            cout << "Invalid element";
+            return 0;
         }
         if (Av < 0 || Av>3)
         {
@@ -239,3 +246,4 @@ int main() {
     Instruction(postfixExpression);
     return 0;
 }
+
